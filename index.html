@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="sl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rojstnodnevni spomini</title>
 
   <style>
@@ -88,127 +88,6 @@
       color: rgba(0, 0, 0, 0.55);
       z-index: 1000;
     }
-
-    #gumbPrikaziVse {
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.85);
-      border: 1.5px solid rgba(255, 255, 255, 0.9);
-      border-radius: 14px;
-      padding: 4px 14px;
-      font-size: 13px;
-      font-family: Arial, Helvetica, sans-serif;
-      color: rgba(0, 0, 0, 0.65);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-      margin-left: 10px;
-      vertical-align: middle;
-    }
-    #gumbPrikaziVse:hover { background: rgba(255, 255, 255, 0.97); color: #333; }
-
-    #overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      z-index: 9999;
-      background: radial-gradient(circle at center, #fff7e6 0%, #ffd6e0 45%, #b8d8ff 100%);
-      overflow-y: auto;
-    }
-
-    #gumbZapri {
-      position: fixed;
-      top: 16px; right: 20px;
-      z-index: 10000;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.94);
-      border: 3px solid rgba(255, 255, 255, 0.9);
-      border-radius: 20px;
-      padding: 8px 22px;
-      font-size: 15px;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #333;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-    }
-    #gumbZapri:hover { background: white; }
-
-    #overlayVsebina {
-      padding: 64px 32px 48px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      will-change: transform;
-    }
-
-    .overlay-naslov {
-      font-size: 22px;
-      font-weight: bold;
-      color: rgba(0, 0, 0, 0.55);
-      margin: 16px 0 8px;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .overlay-mreza-slike {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 16px;
-    }
-
-    .overlay-mreza-sporocila {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-
-    .overlay-sporocilo {
-      background: rgba(255, 255, 255, 0.94);
-      border-radius: 30px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.22);
-      border: 3px solid rgba(255, 255, 255, 0.9);
-      padding: 16px 18px;
-      font-size: 14px;
-      line-height: 1.33;
-      color: #333;
-      text-align: center;
-      white-space: pre-line;
-      height: 200px;
-      overflow: hidden;
-      box-sizing: border-box;
-      cursor: pointer;
-      transition: background 0.15s, box-shadow 0.15s;
-      contain: content;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    .overlay-sporocilo:hover {
-      background: rgba(255, 255, 255, 1);
-      box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28);
-    }
-    .overlay-sporocilo.razsirjeno {
-      height: auto;
-    }
-    .overlay-sporocilo .ime {
-      margin-top: 10px;
-      font-size: 13px;
-      font-weight: bold;
-      color: #8a4fff;
-      white-space: normal;
-    }
-
-    .overlay-slika {
-      width: 100%;
-      height: 150px;
-      min-height: 150px;
-      border-radius: 30px;
-      object-fit: cover;
-      box-shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
-      border: 8px solid white;
-      background: white;
-      display: block;
-      content-visibility: auto;
-      contain-intrinsic-size: auto 150px;
-      contain: layout paint style;
-    }
-
   </style>
 </head>
 
@@ -216,233 +95,35 @@
   <div id="zaslon">
     <div id="napis">Vse najboljše!</div>
   </div>
-  <div id="navodilo">Pritisni F11 za celozaslonski prikaz.<button id="gumbPrikaziVse" onclick="prikaziVse()">Prikaži vse</button></div>
-  <div id="overlay">
-    <button id="gumbZapri" onclick="zapriOverlay()">Zapri ×</button>
-    <div id="overlayVsebina"></div>
-  </div>
+  <div id="navodilo">Pritisni F11 za celozaslonski prikaz.</div>
 
   <script>
-    const slike = Array.from({ length: 81 }, (_, i) => `slike/slika (${i + 1}).png`);
+    var URL_NOVA_SPOROCILA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQh_N_N2St94RSw0sznxFiWG-Xu7dr1Mc4fXvxFkg1vEb0gWldRo1940jnKrlkF6cnnjoTdubNHGW3_/pubhtml";
+    var URL_STARA_SPOROCILA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRuPWLUK4hD1us66sqCUeN7xKxhsbnrD6VY44Vd095HLQPnXX8LfuSb-MK51Dat8yCQ2bheMd6ZaYnc/pub?output=csv";
 
-    const csvBesedilo = `Timestamp,Ime priimek,Ime priimek partnerja,Prideš?,Sporočilo slavljencu:
-27/03/2026 18:03:20,Tadeja Batagelj,Slavljenec,Seveda pridem.,Vse najboljše!
-30/03/2026 20:13:51,Barbara Črnko ,Matjaž Črnko,Seveda pridem.,"Dragi Borut, zelo sva počaščena, da sva prejela tvoje vabilo in udeležbo z veseljem potrjujeva. Prav nenavadno je, da je grof Tatenbach že Abrahamovec, prav gotovo bo gostija v to čast nekaj prav posebnega, zato tega nočeva zamuditi! :)"
-30/03/2026 20:17:17,Samo Repolusk,brez,Seveda pridem.,"Dragi Borut, obdarovan si z mnogimi talenti, ki jih nisi obdržal le zase, ampak si z njimi osrečeval tako družino kot bližnje: oče, ki vozi družino na odštekana potovanja in uči otroke za življenje, igralec, ki ve, da je življenje že tako težko, zato vsi rabimo spodbude in smeh, akademik, ki znaš svoje znanje prenašati na mlade in pomagati forenzikom razreševati zapletene probleme, iskalec in duhovno globok človek, ki si nam zgled v svoji človeški pristnosti v dolinah in na vrhovih! Hvala Ti, ko sploh ne veš, da nas toliko ob sebi dviguješ!"
-30/03/2026 20:48:31,Gašper Dajčman,Alenka Dajčman,Seveda pridem.,Se veselimo srečanja!
-30/03/2026 21:07:26,Smiljan Fras,Bojana Plevnik,Seveda pridem.,"Prihajava 
+    var slike = Array.from({ length: 67 }, function(_, i) {
+      return "slike/slika (" + (i + 1) + ").png";
+    });
 
-"
-31/03/2026 07:49:27,Simona,,"Na žalost ne morem, vendar ti spočam naslednje želje:","Naj ti Abraham prinese srečo, ti pa življenje zajemaj z žlico večjo. Vsak dan si z ljubeznijo postrezi, zdravju in bogastvu v roke sezi!"
-31/03/2026 10:20:49,"Branko -pridem,ne moreš se me znebiti ",Žena Hermina ,Seveda pridem.,"50 let je komaj na 50 procentih obremenitve.
-Sedaj sele se začne luštno "
-31/03/2026 10:51:13,Alen Jelšek,,Seveda pridem.,"Dragi naš Borut, bodi še naprej vesel, razigran, pozitiven in strog. Ta strogost naj ne bo, do samega sebe, začni normalno jest in pit🤣 radi te imamo takšen kot si. "
-01/04/2026 22:09:07,Alenka Ramšak ,Martin Matjašič,Seveda pridem.,"V najtežjih trenutkih mojega življenja si me ti in gledališka skupina skupina spravila v smeh. Zato imaš v mojem srcu posebno mesto. Z veseljem se udeleźim praznovanja tvojega abrahama in da se malo zafrkavam iz tvojih let 🤣... pogumno naprej 🙂, ni še konec ne, to začetek je 😉"
-02/04/2026 10:47:10,Žiga Emeršič,Anja Ancelj,Seveda pridem.,"Bato, tvoji kosmati Crocsi v službi se mi zdijo povsem neprimerni tako kot tvoje obnašanje. Tvoje obnašanje pa je kot tale zapis. Tisti, ki ga ne pozna, ne dojame, da je res čisto vse vedno hec. Vse najboljše, legenda, za sicer precej nepomembno okroglo 5. obletnico v desetiškem sistemu!"
-02/04/2026 12:57:42,Maggie Dokl,Božo Dokl,Seveda pridem.,"Na odru kralj, v kleti znalec,
-kozarček v roki – pravi igralec!
-50 let je šlo mimo kot scene,
-a tvoja igra je še vedno vrhunska, brez cene!
-50 let = 18… z 32 leti izkušenj! 😄
+    var sporocila = [];
+    var vrstaSporocil = [];
 
-Hvala lepa za vabilo 😍😍😍
-"
-02/04/2026 13:40:49,Mateja Jerina,Peter Jerina,Seveda pridem.,"
-
-B   ORUT - ALNO zabaven :)
-O   DPIČEN, a z velikim srcem za svoje ljudi
-R   AZPET med tisoče vlog, ki jim daje svoj maksimum
-U   ČITELJ na fakulteti in v življenju
-T   OPLO sidro svoje Tadeje
-
-B  REZMEJNO predan oče petih zakladov
-A  VTENTIČEN in najboljši na odru
-T  RDEN kot skala, ko pridejo izzivi
-A  KROBAT življenja, ki lovi ravnotežje 
-G  ENIALEN v lovljenju trenutkov s fotoaparatom 
-E  NKRATEN prijatelj, ki zna nasmejati in stati ob strani
-L  JUBI življenje; ljudi, gore, valove, sneg in pesmi Iztoka Mlakarja :)
-J  ASNO je: brez tebe bi bilo vse skupaj precej manj noro … in precej manj lepo 
-
-
-"
-02/04/2026 17:48:28,Ema Batagelj ,Lovro Derstvenšek,Seveda pridem.,Vse najboljše tata. Upam da boš danes super praznoval. Si najboljši tata na svetu. Vesela sem da te imam ❤️
-02/04/2026 22:46:41,Janez Gašparin ,,Seveda pridem.,....
-02/04/2026 23:11:20,Angela Vogrin P.,,Seveda pridem.,"Sedaj prihajaš v najlepša leta. Ne sekiraj se, do penzije je še daleč🤣🤣"
-02/04/2026 23:30:20,Gregor Varl,,Seveda pridem.,Se vidimo. Javi če prinesem kasetofon.
-03/04/2026 15:30:11,Izak Batagelj,,Seveda pridem.,"Hvala ti za vse, kar si mi dal skozi leta. Ponosen sem, da te imam za očeta."
-03/04/2026 18:55:10,Polonca Vodopivec,,Seveda pridem.,"50 let – vintage, s polno glavo las in zgodbami, ki jih še nihče ni preštel! 😆"
-03/04/2026 20:50:32,Irena Podgrajšek-soigralka,,Seveda pridem.,"Dragi Borut. 
-Sem v zadregi, kako z nekaj besedami opisati tako fantastično in vsestransko osebnost, kot si ti. Zame si brez konkurence. Brez tebe bi bilo delovanje v naši gledališki skupini manj zanimivo in zabavno. Si nosilec smeha, obenem pa resnega in odgovornega dela. Prijatelj in odličen sogovornik, ki mu je Bog podaril močan in zveneč glas.
-Skupaj hodiva po gledališkem odru od tvojega prihoda od leta 2014. Nisem tista, ki bi lahko ocenjevala igro amaterskih gledaliških igralcev, menim pa, da si kot staro vino. Vedno boljši in prepričljiv pri izdelavi lika.  
-Linhartovo priznanje za tvojo prvo moško vlogo Francija v igri Pacienti v čakalnici, je nekaj na kar smo vsi ponosni. Rada sem s teboj na odru, ker vem, da znaš  besedilo in da improvizacija ni ravno tvoj adut, tako kot moj ne. Najraje pa sem tvoja Amalija Pešalič v igri Oblast, ki v tebi-geju Dragecu, vidi svojega velikega zaveznika. Edinega, ki jo razume, da si je šla v Diorja živčke hladit, ker jo mož Ante, ki bi rad bil poslanec s to idejo grozno živcira. 
-
-Borut, res si faca. Vsega spoštovanja vredna oseba. Velik po duhu in na tvojo srečo tudi po telesu. Še veliko pozitivnega bi lahko o tebi napisala, ampak vem, da se bomo soigralci med seboj, ne da bi se dogovorili, dopolnjevali.
-
-Hvala ti za vso skrb okrog delovanja skupine ter za vse prevoze na gostovanja, ki si jih opravil do danes ter vodenje evidenc.
-
-Kar se pa tiče Abrahama: Čestitam, da si ga dočakal ter končno postal ""modri mož"". Srečanje z njim ni boleče in pravi lajf se še zdaj komaj začenja!
-Bodi zdrav in srečen ter še naprej nepogrešljiv del naše skupine. Radi te imamo."
-04/04/2026 09:42:42,Bruno  in Petra Jereb,,Seveda pridem.,"
-Na kretko...Borut
-
-Bog, hvala za toliko njegovih let.
-Bog, daj nu jih še mnogo doživet.
-Za rast je potrebno veliko preizkušenj imet,
-daj, da ne bi bile težke, težke za znoret.
-Čim manj stresa, in čim manj za skrbet,
-da boš zdrav in srečen, kot lep cvet.
-Da uspel bi si čas za družino in prijatle vzet,
-in Bog ti bo podaril še veliko srečnih let.
-Ostani, aktiven, vesel , prijazno topel za pogret,
-od zunaj , dobra lupina, znotraj odličnih okusov preplet, kot kornet.
-
-Jerebovi"
-04/04/2026 14:29:25,Abby Brewster,,Seveda pridem.,"Dragi slavljenec!
-
-Medtem, ko ti jih Abraham 50 odkriva,
-sva jih tudi midva nabrala že deset.
-A vendar skupaj nikdar ne sediva,
-ker bi za prisotne bilo za znoret.
-Vendarle rada veliko govoriva,
-a še raje se v družbi veseliva.
-
-Ob tvojem jubileju pa se mi zdi dober običaj,
-da se malo ozreva na naju nazaj.
-
-Za začetek poročni prstan sem hranila ti,
-ko sva jedla sladoled in si igral mi zaročenca.
-In vse odkar ob meni v čakalnici si,
-ni tam več prisotna nobena konkurenca.
-
-V bazenu si rad pred taščo me skrival,
-zanimive poti Slovenije z mano odkrival.
-Pijačo si mi točil in jaz sem ti pela,
-sva prenočila v Wajdušni in sadjarila vesela.
-
-Skupaj sva se za korupcijo borila,
-za KPS delala in zanje volila.
-Bilo je to obdobje, ko sam sebe si iskal
-in o svoji usmerjenosti se spraševal.
-
-Nato v ordinacijo med norce si želel,
-da poleg svoje žene bi še tajnico imel.
-Na koncu pa ob meni si dokončno zblaznel
-in v afriški Srečni dol z mano odšel.
-
-Borut!
-Naj te življenje še naprej z dobro voljo obdaruje,
-naj Bog obilo zdravja in miru ti nasuje.
-Družina naj bo tista, ki te vedno osrečuje,
-delo in igra pa nekaj, kar te izpopolnjuje.
-
-Tvoja teta Abby"
-04/04/2026 16:32:23,"Kristina Kovačič Škerget, Ivan Škerget",,Seveda pridem.,"Dragi slavljenec, 
-
-50 let je lep jubilej, še boljši in lepši je pa človek, ki ga praznuje. 
-
-V tebi občudujeva neverjetno širino, si mož zvestobe in vere, oče petih otrok, ki jim s svojim zgledom kažeš, kaj pomeni živeti polno in srčno. Ženina druga polovica, opora družini in dragocen član zakonske skupine, za katero imava privilegij, da jo obiskujeva. 
-Si pravi multipraktik življenja, doktor znanosti z radovednim umom, preprost, prizemljen, dostopen. Od gledališkega odra do oltarja, s spoštovanjem služiš skupnosti. 
-Poznava te krajši čas,  ampak v tebi prepoznavava avanturista, popotnika, gurmana, Primorca s pristnim naglasom, ki je preprost človek z velikim srcem. 
-Želiva ti, da ti Bog še naprej obilno blagoslavlja korake, tvojo družino, delo, prijateljstva in konjičke, ter da bi še naslednja desetletja živel z isto vero,  humorjem, radovednostjo in vedrino.  
-Vse najboljše in na zdravje.
-Kristina&Ivan."
-04/04/2026 19:33:07,andrej.zgavec,,Seveda pridem.,Da se jutri zbudiš v 1. dan 2. polovice 1. stoletja tvojega življenja in da bo to boljša polovica!   😘
-05/04/2026 19:59:15,Majda in Stojan Vodopivec,,Seveda pridem.,"Ne obremenjuj se s pedesetico, ničlo zbriši in vse bo vredu, ker številke niso pomembne. "
-05/04/2026 20:46:02,Ankota (oba),,Seveda pridem.,"Dragi Borut! Veseli naju, da naše prijateljstvo traja že več kot 20 let (!) - in nam želiva, da bi še dolgo. Obilo zdravja, ljubezni, časa za pomembne reči in veselja ob vsakdanjih izzivih ti želiva.  Po Abrahamu se življenje pravzaprav šele začne, boš videl! Bog te živi! Maja in Matej"
-06/04/2026 20:03:25,Ana Hernet ,,Seveda pridem.,"Z največjim veseljem pridem k tebi, da skupaj proslavimo tvoj poseben rojstni dan. ✨
-Tvoji trenutki sreče mi veliko pomenijo, zato mi je v čast biti del tega praznovanja.
-Hvala za povabilo – pridem s toplino v srcu in iskrenimi željami zate. 💛"
-06/04/2026 20:51:08,Mitja Ajd ,,Seveda pridem.,"Dragi prijatelj z imenom Borut, veselim se praznovanja tvojega rojstnega dne in spoznati tvojega bodočega prijatelja Abrahama, ki te bo spremljal v tvojem nadaljnjem življenju. Več besed v okviru tvojega prazničnega dne, pa bo spregovorjenih ob najinemu snidenju na praznovanju.
-Vse dobro
-Mitja "
-06/04/2026 21:00:25,Uroš in Jožica ,,Seveda pridem.,"Borut, vse najboljše za tvojih 50! Želiva ti, da še naprej optimiziraš življenje kot dober algoritem – čim manj bugov in z vrhunskim outputom.  Naj te potepanja z avtodomom polnijo z energijo, oder drži v formi, naša srečanja zakonske skupine držijo v balansu, doma pa je tvoj najmočnejši “core” – žena in ljubezen.«"
-08/04/2026 11:31:29,Denis Beras + Rebeka Beranič,,Seveda pridem.,Sam en hlaž vina men dej.   Inu zdravja!
-08/04/2026 11:37:18,Mojca Batagelj,,Seveda pridem.,"Abraham ni kriza, je nadgradnja. Pri 50 sistem teče stabilno, z več izkušnjami in manj bugi.
-Naj ti še naprej uspeva v krogu družine, v službi in na odru. Vse najboljše!"
-08/04/2026 12:31:23,Marko Meža,,Seveda pridem.,"Borut, se še spomniš, kako velika luknja je nastala v pršutovi steni na vinskem sejmu?"
-08/04/2026 14:23:40,Katja Virt,,Seveda pridem.,Vse najboljše za rojstni dan!
-08/04/2026 14:57:35,Hana Batagelj,,Seveda pridem.,Vse najboljše dragi stric.
-08/04/2026 21:10:55,Danijel Prelc,,Seveda pridem.,Čestitam za planiran izid verzije v5.0. Želim ti da bi bila brez hroščev.
-08/04/2026 21:17:29,Julija Prelc,,Seveda pridem.,"Dragi Borut,
-Danes praznuješ 50 let. Zdej so tvoja kolena glasnejša od glasbe na zabavah in v jutro te ne zbuja budilka ampak križ. Ampak brez panike, to ni starost, to je sam “premium različica” z dodatkom zvočnih efektov.
-Glavno je, da še vedno uživaš in to je to!
-Vse naj boljše!!!!"
-08/04/2026 21:31:09,Mateja Prelc,,Seveda pridem.,"Dragi svak!
-
-50 let…P-O-L stoletja!
-
-Kar pomeni: uradno si dovolj star, da veš vse…
-in dovolj glasen, da vsi mislijo, da res veš vse 😄
-
-Kot strokovnjak za računalništvo bi moral znati optimizirati sisteme…
-ampak doma imaš 5 “nepredvidljivih procesov”, 1 psihologinjo z omejenim živčnim pomnilnikom in sebe… kot glavni bug, ki ga nihče ne zna odpraviti 🤣
-
-Ampak bodimo iskreni - brez tebe bi bilo sila dolgočasno. Tako pa imamo 24/7 stand-up show, nenehno improvizacijo brez scenarija in občutek, da se lahko vsak trenutek zgodi karkoli. In to… si ti. In ostani tak, kot si. Zadnji primerek. Takega modela tako ali tako več ne znajo narediti. 
-
-Čin na prvih 50. In če en čin na 50, ki šele prihajajo!
-
-Vse naj naj, Mateja"
-08/04/2026 22:24:24,Nino Auer,,Seveda pridem.,"Dragi Borut, moj najljubši Primorec, glej, da boš zdrav, da boš lahko praznoval okroglo obletnico vsaj tako ""divje"", kot si v svojih štiridesetih doma ;-) Upam, da ne zamudim preveč!"
-09/04/2026 10:36:21,Anej Batagelj,,Seveda pridem.,Da boš velik in močan
-09/04/2026 10:49:26,Boštjan Batagelj,,Seveda pridem.,Še mnogo gledaliških in glasbenih podvigov. 
-10/04/2026 18:53:48,Evgen Meklav in boljša polovica,,Seveda pridem.,Kolko kaplic tolko let 
-11/04/2026 13:08:43,Mateja in Peter Jerina,,Seveda pridem.,"B 💥rezmejno zabaven
-O💥 dločno trmast 😄 
-R💥aketa odrskega parketa
-U💥 čen, a neukročen 😃
-T 💥adejin kompas, a ona njegov varen pristan❤️
-
-B💥 ager idej 
-A 💥krobat mnogoterih vlog
-T💥 oplina očetovstva
-A 💥van - turist na 4 kolesih
-G💥 enialec fotografije
-E💥lan prijateljstva
-L💥 jubitelj čarovnije
-J 💥ezdec lepega in dobrega"
-11/04/2026 13:31:51,Barbara Jurički ,,Seveda pridem.,Dragi Borči.  Že eno leto pogrešam tvojo gobo in tvoj mah.
-12/04/2026 01:47:25,Erik Ušaj,,Seveda pridem.,Gremo najmanj do sto.
-12/04/2026 12:29:30,Valentina prelc,,Seveda pridem.,Vse najboljše Borut od tvoje najljubše nečakinje😁
-12/04/2026 20:19:31,Gordana Arzenšek,,Seveda pridem.,"Dragi NAŠ BATO!
-Originalen, igriv, simpatičen, nadarjen, a tudi hudomušno piker in direkten … vse to si ti … BB
-
-Le kdo bi si lahko zamislil snubitev na Triglavu?! In ne samo to, uspe prepričati celo karavano, skupaj s harmoniko ubrano, da ti sledi … samo ti … BB.
-
-Si očka/tati/tata/ati/oči, ki si ga vsak otrok želi, zato ti jih je VSEMOGOČNI B dal toliko več kot jih imamo mi… samo tebi … BB
-
-Profesor na FRI (tako ali drugače 😊) – s tvojim računalniškim vidom – opaziš vedno več kot mi vsi skupaj z AI. Le za kakšen oster Tadejin pogled občasno zatisneš oči in si požvižgaš za lepše dni ... prav ti BB
-
-Nisi hollywoodski igralec, vendar na odru zasiješ bolj kot najsvetlejši in najnovejši ChatGPT ... samo ti … BB 
-
-Vsak tvoj rojstni dan je nepozaben šov, kjer se publika neprestano smeji, okoli hiše po žaru diši in se iz vseh vogalov kadi, o tem se še dolgo dolgo govori ... samo o tebi BB.
-
-Česar se lotiš, ti zmeraj vse uspe, le ena reč ti najbolje ne gre - “švercanje“ manga z letalom raje opusti, saj na Brniku se še danes govori, kako sladki so bili … prav tebi so jih zasegli … dragi naš … BB!
-
-Rekel si, da je edina stvar, ki si se je naučil na mojem tečaju italijanščine pesmica  “Nel blu dipinto di blu“ – ki ti v življenju ničemur ne služi. Upam pa, da ko se bova srečala čez 50 let in bom jaz že stara in dementna, bolj kot sem sedaj, mi boš zapel “Volare, cantare …oooo“  in se bom takoj spomnila, da si to prav ti … BB!
-
-Prav kot velika francoska diva BB (Brigitte Bardot) obožuješ živali tudi ti, le da jih je ona v “štalci“ gladila, tebi pa prašiček in teliček najbolj na žaru diši. 
-
-Dragi naš Batoman … želimo ti, da ostaneš prav tak kot si!
-VSE NAJBOLJŠE in še na MNOGE ZRAVE in SREČNE DNI!
-Gorazd, Ganej in Gordana ali 3G
-
-
-"
-12/04/2026 21:26:27,benjamin batagelj,,Seveda pridem.,Vse najboljse🎉🎂🎊🎉🥳🎂
-12/04/2026 21:44:14,Tadej Panjtar,,Seveda pridem.,Ostani vedno mlad po srcu!
-14/04/2026 21:30:25,Lovro Derstvenšek,,Seveda pridem.,"Dragi Borut. Ob velikem Abrahamu Vam želim veliko zdravja, ljubezni in sreče. Upam da bo Vaše leto tudi polno smeha, zabave in veselja. "
-14/04/2026 22:06:36,"Kako zelo mi je žal, da me ne bo...Že v decembru sem uredila ta datum in plačala predplačilo, ker je bilo ugodno za Auroro v Malem Lošinju..",,"Na žalost ne morem, vendar ti spočam naslednje želje:","Sporočilo bo moje osebno darilo zate, .... "`;
+    function popraviCsvUrl(url) {
+      if (url.indexOf("pubhtml") !== -1) {
+        return url.replace("pubhtml", "pub?output=csv");
+      }
+      return url;
+    }
 
     function razcleniCSV(vhod) {
-      const vrstice = [];
-      let vrstica = [];
-      let polje = "";
-      let vNarekovajih = false;
+      var vrstice = [];
+      var vrstica = [];
+      var polje = "";
+      var vNarekovajih = false;
 
-      for (let i = 0; i < vhod.length; i++) {
-        const znak = vhod[i];
-        const naslednji = vhod[i + 1];
+      for (var i = 0; i < vhod.length; i++) {
+        var znak = vhod[i];
+        var naslednji = vhod[i + 1];
 
         if (znak === '"') {
           if (vNarekovajih && naslednji === '"') {
@@ -451,13 +132,13 @@ Gorazd, Ganej in Gordana ali 3G
           } else {
             vNarekovajih = !vNarekovajih;
           }
-        } else if (znak === ',' && !vNarekovajih) {
+        } else if (znak === "," && !vNarekovajih) {
           vrstica.push(polje);
           polje = "";
-        } else if ((znak === '\n' || znak === '\r') && !vNarekovajih) {
-          if (znak === '\r' && naslednji === '\n') i++;
+        } else if ((znak === "\n" || znak === "\r") && !vNarekovajih) {
+          if (znak === "\r" && naslednji === "\n") i++;
           vrstica.push(polje);
-          if (vrstica.some(celica => celica.trim() !== "")) vrstice.push(vrstica);
+          if (vrstica.some(function(c) { return c.trim() !== ""; })) vrstice.push(vrstica);
           vrstica = [];
           polje = "";
         } else {
@@ -466,99 +147,222 @@ Gorazd, Ganej in Gordana ali 3G
       }
 
       vrstica.push(polje);
-      if (vrstica.some(celica => celica.trim() !== "")) vrstice.push(vrstica);
+      if (vrstica.some(function(c) { return c.trim() !== ""; })) vrstice.push(vrstica);
       return vrstice;
     }
 
-    function pripraviSporocila(csv) {
-      const vrstice = razcleniCSV(csv);
-      const glava = vrstice[0].map(x => x.trim().toLowerCase());
-
-      const indeksIme = glava.findIndex(x => x === "ime priimek");
-      const indeksSporocilo = glava.findIndex(x => x.includes("sporočilo slavljencu"));
-
-      return vrstice.slice(1)
-        .map((vrstica, indeks) => ({
-          id: indeks,
-          ime: (vrstica[indeksIme] || "Gost").trim() || "Gost",
-          tekst: (vrstica[indeksSporocilo] || "").trim()
-        }))
-        .filter(vnos => vnos.tekst.length > 0);
+    function normaliziraj(besedilo) {
+      return String(besedilo || "")
+        .trim()
+        .toLowerCase()
+        .split("č").join("c")
+        .split("š").join("s")
+        .split("ž").join("z")
+        .split("ć").join("c")
+        .split("đ").join("d")
+        .replace(/[:?]/g, "");
     }
 
-    const sporocila = pripraviSporocila(csvBesedilo);
+    function najdiStolpec(glava, moznosti) {
+      var norm = glava.map(normaliziraj);
 
-    // Vrstni red sporočil: ko se sporočilo pokaže, gre na konec vrste.
-    // Program izbira samo med prvimi 25, zato se isto sporočilo ne ponavlja hitro.
-    let vrstaSporocil = [...sporocila];
+      for (var i = 0; i < moznosti.length; i++) {
+        var iskano = normaliziraj(moznosti[i]);
+        for (var j = 0; j < norm.length; j++) {
+          if (norm[j].indexOf(iskano) !== -1) return j;
+        }
+      }
+
+      return -1;
+    }
+
+    function pripraviStaraSporocila(csv) {
+      var vrstice = razcleniCSV(csv);
+      if (vrstice.length < 2) return [];
+
+      var glava = vrstice[0];
+
+      var indeksIme = najdiStolpec(glava, ["ime priimek"]);
+      var indeksSporocilo = najdiStolpec(glava, ["sporocilo slavljencu", "sporočilo slavljencu"]);
+
+      if (indeksIme === -1 || indeksSporocilo === -1) return [];
+
+      return vrstice.slice(1).map(function(vrstica, indeks) {
+        return {
+          id: "staro-" + indeks,
+          ime: ((vrstica[indeksIme] || "Gost").trim() || "Gost"),
+          tekst: ((vrstica[indeksSporocilo] || "").trim())
+        };
+      }).filter(function(vnos) {
+        return vnos.tekst.length > 0;
+      });
+    }
+
+    function pripraviNovaSporocila(csv) {
+      var vrstice = razcleniCSV(csv);
+      if (vrstice.length < 2) return [];
+
+      var glava = vrstice[0];
+
+      var indeksIme = najdiStolpec(glava, ["ime in priimek", "ime priimek"]);
+      var indeksSporocilo = najdiStolpec(glava, ["sporocilo", "sporočilo"]);
+
+      if (indeksIme === -1 || indeksSporocilo === -1) return [];
+
+      return vrstice.slice(1).map(function(vrstica, indeks) {
+        return {
+          id: "novo-" + indeks,
+          ime: ((vrstica[indeksIme] || "Gost").trim() || "Gost"),
+          tekst: ((vrstica[indeksSporocilo] || "").trim())
+        };
+      }).filter(function(vnos) {
+        return vnos.tekst.length > 0;
+      });
+    }
+
+    async function preberiCSV(url) {
+      var csvUrl = popraviCsvUrl(url);
+      var locilo = csvUrl.indexOf("?") === -1 ? "?" : "&";
+      var odgovor = await fetch(csvUrl + locilo + "cacheBust=" + Date.now());
+      return await odgovor.text();
+    }
+
+    async function osveziSporocila() {
+      try {
+        var csvStara = await preberiCSV(URL_STARA_SPOROCILA);
+        var csvNova = await preberiCSV(URL_NOVA_SPOROCILA);
+
+        var stara = pripraviStaraSporocila(csvStara);
+        var nova = pripraviNovaSporocila(csvNova);
+
+        var vsa = stara.concat(nova);
+
+        var obstojeci = new Set(sporocila.map(function(s) {
+          return s.id + "|" + s.ime + "|" + s.tekst;
+        }));
+
+        for (var i = 0; i < vsa.length; i++) {
+          var s = vsa[i];
+          var kljuc = s.id + "|" + s.ime + "|" + s.tekst;
+
+          if (!obstojeci.has(kljuc)) {
+            sporocila.push(s);
+
+            if (s.id.indexOf("novo-") === 0) {
+              vrstaSporocil.unshift(s);
+
+              // Če sporočilo pride po začetnem nalaganju, ga damo v prednostno vrsto
+              if (!prvoNalaganaje) {
+                prednostnaSporocila.unshift(s);
+              }
+            } else {
+              vrstaSporocil.push(s);
+            }
+          }
+        }
+
+        if (prvoNalaganaje && vrstaSporocil.length > 0) {
+          premesaj(vrstaSporocil);
+        }
+
+        prvoNalaganaje = false;
+
+        console.log("Naloženih sporočil:", sporocila.length);
+      } catch (napaka) {
+        console.log("Napaka pri branju Google Sheets:", napaka);
+      }
+    }
 
     function premesaj(seznam) {
-      for (let i = seznam.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [seznam[i], seznam[j]] = [seznam[j], seznam[i]];
+      for (var i = seznam.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = seznam[i];
+        seznam[i] = seznam[j];
+        seznam[j] = temp;
       }
       return seznam;
     }
 
-    premesaj(vrstaSporocil);
-    const zaslon = document.getElementById("zaslon");
-    const aktivni = [];
+    var zaslon = document.getElementById("zaslon");
+    var aktivni = [];
 
-    const NAJ_VEC_ELEMENTOV = 8;
-    const VSAJ_SPOROCIL = 2;
-    const INTERVAL_NOVEGA_ELEMENTA = 3200;
-    const CAS_RASTI = 4500;
-    const CAS_LEBDENJA = 26000;
-    const CAS_IZGINJANJA = 3500;
-    const RAZMAK = 20;
-    const NAJVEC_SPOROCIL = 3;
-    const NAJVEC_SLIK = 5;
-    const MIN_CAS_NA_ZASLONU = 10000;
-    const MAX_CAS_NA_ZASLONU = 60000;
+    var NAJ_VEC_ELEMENTOV = 8;
+    var VSAJ_SPOROCIL = 2;
+    var INTERVAL_NOVEGA_ELEMENTA = 3200;
+    var CAS_RASTI = 4500;
+    var CAS_IZGINJANJA = 3500;
+    var RAZMAK = 20;
+    var NAJVEC_SPOROCIL = 3;
+    var NAJVEC_SLIK = 5;
+    var MIN_CAS_NA_ZASLONU = 10000;
+    var MAX_CAS_NA_ZASLONU = 60000;
+    var cakalnaVrstaZadnjih = [];
+    var MIN_RAZMAK_PONOVITVE = 10;
+    var prednostnaSporocila = [];
+  var prvoNalaganaje = true;
 
     function nakljucno(min, max) {
       return Math.random() * (max - min) + min;
     }
 
     function steviloSporocilNaZaslonu() {
-      return aktivni.filter(e => e.tip === "sporocilo" && !e.odstranjujem).length;
+      return aktivni.filter(function(e) {
+        return e.tip === "sporocilo" && !e.odstranjujem;
+      }).length;
     }
 
     function steviloSlikNaZaslonu() {
-      return aktivni.filter(e => e.tip === "slika" && !e.odstranjujem).length;
+      return aktivni.filter(function(e) {
+        return e.tip === "slika" && !e.odstranjujem;
+      }).length;
     }
 
     function aktivniIDjiSporocil() {
       return new Set(
         aktivni
-          .filter(e => e.tip === "sporocilo" && !e.odstranjujem)
-          .map(e => e.sporociloId)
+          .filter(function(e) {
+            return e.tip === "sporocilo" && !e.odstranjujem;
+          })
+          .map(function(e) {
+            return e.sporociloId;
+          })
       );
     }
 
     function izberiSporociloKiNiNaZaslonu() {
-      const uporabljeni = aktivniIDjiSporocil();
 
-      // Izbiramo samo med prvimi 25 sporočili v vrsti.
-      // Če je sporočil manj kot 25, izbiramo med vsemi.
-      const velikostIzbire = Math.min(25, vrstaSporocil.length);
+      var uporabljeni = aktivniIDjiSporocil();
 
-      let kandidati = vrstaSporocil
-        .slice(0, velikostIzbire)
-        .filter(s => !uporabljeni.has(s.id));
+      while (prednostnaSporocila.length > 0) {
+        var nujno = prednostnaSporocila.shift();
 
-      // Če so vsa prva sporočila že na zaslonu, pogledamo malo širše,
-      // vendar še vedno ne dovolimo, da je isto sporočilo hkrati 2x na zaslonu.
+        if (!uporabljeni.has(nujno.id)) {
+          return nujno;
+        }
+      }
+      if (vrstaSporocil.length === 0) return null;
+
+
+
+      var kandidati = vrstaSporocil.filter(function(s) {
+        return !uporabljeni.has(s.id) &&
+              cakalnaVrstaZadnjih.indexOf("sporocilo|" + s.id) === -1;
+      });
+
       if (kandidati.length === 0) {
-        kandidati = vrstaSporocil.filter(s => !uporabljeni.has(s.id));
+        kandidati = vrstaSporocil.filter(function(s) {
+          return !uporabljeni.has(s.id);
+        });
       }
 
       if (kandidati.length === 0) return null;
 
-      const izbrano = kandidati[Math.floor(Math.random() * kandidati.length)];
+      var izbrano = kandidati[Math.floor(Math.random() * kandidati.length)];
 
-      // Izbrano sporočilo premaknemo na konec vrste.
-      const indeks = vrstaSporocil.findIndex(s => s.id === izbrano.id);
+      var indeks = vrstaSporocil.findIndex(function(s) {
+        return s.id === izbrano.id;
+      });
+
       if (indeks !== -1) {
         vrstaSporocil.splice(indeks, 1);
         vrstaSporocil.push(izbrano);
@@ -572,16 +376,16 @@ Gorazd, Ganej in Gordana ali 3G
     }
 
     function escapeHTML(besedilo) {
-      return besedilo
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+      return String(besedilo || "")
+        .split("&").join("&amp;")
+        .split("<").join("&lt;")
+        .split(">").join("&gt;")
+        .split('"').join("&quot;")
+        .split("'").join("&#039;");
     }
 
     function skrajsajPredolgoBesedilo(tekst) {
-      const najvec = 780;
+      var najvec = 780;
       if (tekst.length <= najvec) return tekst;
       return tekst.slice(0, najvec).trim() + " …";
     }
@@ -600,39 +404,77 @@ Gorazd, Ganej in Gordana ali 3G
     }
 
     function ustvariSporocilo() {
-      const podatek = izberiSporociloKiNiNaZaslonu();
+      var podatek = izberiSporociloKiNiNaZaslonu();
       if (!podatek) return null;
-      const element = document.createElement("div");
+
+      var element = document.createElement("div");
       element.className = "element sporocilo";
       prilagodiVelikost(element, podatek.tekst);
 
-      const varnoSporocilo = escapeHTML(skrajsajPredolgoBesedilo(podatek.tekst));
-      const varnoIme = escapeHTML(podatek.ime);
+      var varnoSporocilo = escapeHTML(skrajsajPredolgoBesedilo(podatek.tekst));
+      var varnoIme = escapeHTML(podatek.ime);
 
-      element.innerHTML = `
-        <div>${varnoSporocilo}</div>
-        <div class="ime">— ${varnoIme}</div>
-      `;
+      element.innerHTML =
+        "<div>" + varnoSporocilo + "</div>" +
+        "<div class='ime'>— " + varnoIme + "</div>";
 
       zaslon.appendChild(element);
-      return { element, tip: "sporocilo", sporociloId: podatek.id };
+
+      return {
+        element: element,
+        tip: "sporocilo",
+        sporociloId: podatek.id
+      };
+    }
+
+    function izberiSlikoKiNiPredKratkimBilaNaZaslonu() {
+      var aktivneSlike = new Set(
+        aktivni
+          .filter(function(e) {
+            return e.tip === "slika" && !e.odstranjujem;
+          })
+          .map(function(e) {
+            return e.slikaSrc;
+          })
+      );
+
+      var kandidati = slike.filter(function(src) {
+        return !aktivneSlike.has(src) && cakalnaVrstaZadnjih.indexOf("slika|" + src) === -1;
+      });
+
+      if (kandidati.length === 0) {
+        kandidati = slike.filter(function(src) {
+          return !aktivneSlike.has(src);
+        });
+      }
+
+      if (kandidati.length === 0) return null;
+
+      return kandidati[Math.floor(Math.random() * kandidati.length)];
     }
 
     function ustvariSliko() {
-      const element = document.createElement("img");
-      element.className = "element slika";
-      element.src = izberiNakljucno(slike);
+      var src = izberiSlikoKiNiPredKratkimBilaNaZaslonu();
+      if (!src) return null;
 
-      const velikost = nakljucno(190, 340);
+      var element = document.createElement("img");
+      element.className = "element slika";
+      element.src = src;
+
+      var velikost = nakljucno(190, 340);
       element.style.width = velikost + "px";
       element.style.height = velikost + "px";
 
       zaslon.appendChild(element);
-      return { element, tip: "slika" };
+
+      return {
+        element: element,
+        tip: "slika",
+        slikaSrc: src
+      };
     }
 
     function sePrekriva(a, b) {
-      // Strogo preverjanje okvirjev: tudi kotički se ne smejo dotikati/prekrivati.
       return !(
         a.x + a.w + RAZMAK <= b.x ||
         a.x >= b.x + b.w + RAZMAK ||
@@ -642,15 +484,18 @@ Gorazd, Ganej in Gordana ali 3G
     }
 
     function najdiProstoMesto(w, h) {
-      for (let i = 0; i < 220; i++) {
-        const kandidat = {
+      for (var i = 0; i < 220; i++) {
+        var kandidat = {
           x: nakljucno(30, Math.max(30, window.innerWidth - w - 30)),
           y: nakljucno(30, Math.max(30, window.innerHeight - h - 30)),
-          w, h
+          w: w,
+          h: h
         };
 
-        let prosto = true;
-        for (const drug of aktivni) {
+        var prosto = true;
+
+        for (var j = 0; j < aktivni.length; j++) {
+          var drug = aktivni[j];
           if (!drug.odstranjujem && sePrekriva(kandidat, drug)) {
             prosto = false;
             break;
@@ -663,17 +508,14 @@ Gorazd, Ganej in Gordana ali 3G
       return null;
     }
 
-    function dodajElement(prisilnoSporocilo = false) {
+    function dodajElement(prisilnoSporocilo) {
       if (aktivni.length >= NAJ_VEC_ELEMENTOV) return;
       if (sporocila.length === 0 && slike.length === 0) return;
 
-      const stSporocil = steviloSporocilNaZaslonu();
-      const stSlik = steviloSlikNaZaslonu();
+      var stSporocil = steviloSporocilNaZaslonu();
+      var stSlik = steviloSlikNaZaslonu();
 
-      // Na zaslonu naj bosta 2 ali 3 sporočila.
-      // Če sta že 3, ne dodajamo novega sporočila.
-      // Če je slik že 5, ne dodajamo nove slike.
-      let najBoSporocilo;
+      var najBoSporocilo;
 
       if (prisilnoSporocilo || stSporocil < VSAJ_SPOROCIL) {
         najBoSporocilo = true;
@@ -682,37 +524,39 @@ Gorazd, Ganej in Gordana ali 3G
       } else if (stSlik >= NAJVEC_SLIK) {
         najBoSporocilo = true;
       } else {
-        najBoSporocilo = Math.random() < 0.45;
+        najBoSporocilo = Math.random() < 0.25;
       }
 
       if (najBoSporocilo && stSporocil >= NAJVEC_SPOROCIL) return;
       if (!najBoSporocilo && stSlik >= NAJVEC_SLIK) return;
 
-      const nov = najBoSporocilo ? ustvariSporocilo() : ustvariSliko();
+      var nov = najBoSporocilo ? ustvariSporocilo() : ustvariSliko();
       if (!nov) return;
 
-      setTimeout(() => {
+      setTimeout(function() {
         if (!document.body.contains(nov.element)) return;
 
-        const w = nov.element.offsetWidth || 280;
-        const h = nov.element.offsetHeight || 220;
-        const mesto = najdiProstoMesto(w, h);
+        var w = nov.element.offsetWidth || 280;
+        var h = nov.element.offsetHeight || 220;
+        var mesto = najdiProstoMesto(w, h);
 
-        // Če ni prostora, se element ne pojavi.
         if (!mesto) {
           nov.element.remove();
           return;
         }
 
-        const trajanje = nakljucno(MIN_CAS_NA_ZASLONU, MAX_CAS_NA_ZASLONU);
-        const casLebdenja = Math.max(1000, trajanje - CAS_RASTI - CAS_IZGINJANJA);
+        var trajanje = nakljucno(MIN_CAS_NA_ZASLONU, MAX_CAS_NA_ZASLONU);
+        var casLebdenja = Math.max(1000, trajanje - CAS_RASTI - CAS_IZGINJANJA);
 
-        const zapis = {
-          ...nov,
+        var zapis = {
+          element: nov.element,
+          tip: nov.tip,
+          sporociloId: nov.sporociloId,
+          slikaSrc: nov.slikaSrc,
           x: mesto.x,
           y: mesto.y,
-          w,
-          h,
+          w: w,
+          h: h,
           vx: nakljucno(-0.16, 0.16),
           vy: nakljucno(-0.16, 0.16),
           scale: 0.08,
@@ -720,9 +564,10 @@ Gorazd, Ganej in Gordana ali 3G
           rot: nakljucno(-7, 7),
           rojstvo: performance.now(),
           casRasti: CAS_RASTI,
-          casLebdenja,
+          casLebdenja: casLebdenja,
           casIzginjanja: CAS_IZGINJANJA,
           odstranjujem: false
+          
         };
 
         aktivni.push(zapis);
@@ -730,27 +575,39 @@ Gorazd, Ganej in Gordana ali 3G
     }
 
     function posodobi() {
-      const zdaj = performance.now();
+      var zdaj = performance.now();
 
-      for (let i = aktivni.length - 1; i >= 0; i--) {
-        const a = aktivni[i];
-        const starost = zdaj - a.rojstvo;
-        const zacetekIzginjanja = a.casRasti + a.casLebdenja;
-        const konec = a.casRasti + a.casLebdenja + a.casIzginjanja;
+      for (var i = aktivni.length - 1; i >= 0; i--) {
+        var a = aktivni[i];
+        var starost = zdaj - a.rojstvo;
+        var zacetekIzginjanja = a.casRasti + a.casLebdenja;
+        var konec = a.casRasti + a.casLebdenja + a.casIzginjanja;
 
         if (starost < a.casRasti) {
-          const p = starost / a.casRasti;
-          a.scale = 0.08 + 0.92 * p;
-          a.opacity = p;
+          var p1 = starost / a.casRasti;
+          a.scale = 0.08 + 0.92 * p1;
+          a.opacity = p1;
         } else if (starost < zacetekIzginjanja) {
           a.scale = 1;
           a.opacity = 1;
         } else if (starost < konec) {
-          const p = (starost - zacetekIzginjanja) / a.casIzginjanja;
-          a.scale = 1 - 0.25 * p;
-          a.opacity = 1 - p;
+          var p2 = (starost - zacetekIzginjanja) / a.casIzginjanja;
+          a.scale = 1 - 0.25 * p2;
+          a.opacity = 1 - p2;
           a.odstranjujem = true;
         } else {
+          if (a.tip === "sporocilo" && a.sporociloId) {
+            cakalnaVrstaZadnjih.push("sporocilo|" + a.sporociloId);
+          }
+
+          if (a.tip === "slika" && a.slikaSrc) {
+            cakalnaVrstaZadnjih.push("slika|" + a.slikaSrc);
+          }
+
+          while (cakalnaVrstaZadnjih.length > MIN_RAZMAK_PONOVITVE) {
+            cakalnaVrstaZadnjih.shift();
+          }
+
           a.element.remove();
           aktivni.splice(i, 1);
           continue;
@@ -762,140 +619,98 @@ Gorazd, Ganej in Gordana ali 3G
         }
       }
 
-      for (let i = 0; i < aktivni.length; i++) {
-        for (let j = i + 1; j < aktivni.length; j++) {
-          const a = aktivni[i];
-          const b = aktivni[j];
-          if (a.odstranjujem || b.odstranjujem) continue;
+      for (var x = 0; x < aktivni.length; x++) {
+        for (var y = x + 1; y < aktivni.length; y++) {
+          var e1 = aktivni[x];
+          var e2 = aktivni[y];
 
-          const ax = a.x + a.w / 2;
-          const ay = a.y + a.h / 2;
-          const bx = b.x + b.w / 2;
-          const by = b.y + b.h / 2;
-          const dx = ax - bx;
-          const dy = ay - by;
-          const razdalja = Math.sqrt(dx * dx + dy * dy) || 1;
-          const prekrivanjeOkvirjev = sePrekriva(a, b);
-          const minRazdalja = Math.max(a.w, a.h, b.w, b.h) * 0.72 + RAZMAK;
+          if (e1.odstranjujem || e2.odstranjujem) continue;
+
+          var ax = e1.x + e1.w / 2;
+          var ay = e1.y + e1.h / 2;
+          var bx = e2.x + e2.w / 2;
+          var by = e2.y + e2.h / 2;
+
+          var dx = ax - bx;
+          var dy = ay - by;
+          var razdalja = Math.sqrt(dx * dx + dy * dy) || 1;
+          var prekrivanjeOkvirjev = sePrekriva(e1, e2);
+          var minRazdalja = Math.max(e1.w, e1.h, e2.w, e2.h) * 0.72 + RAZMAK;
 
           if (prekrivanjeOkvirjev || razdalja < minRazdalja) {
-            const moc = prekrivanjeOkvirjev ? 0.12 : (minRazdalja - razdalja) / minRazdalja * 0.045;
-            const nx = dx / razdalja;
-            const ny = dy / razdalja;
-            a.vx += nx * moc;
-            a.vy += ny * moc;
-            b.vx -= nx * moc;
-            b.vy -= ny * moc;
+            var moc = prekrivanjeOkvirjev ? 0.12 : (minRazdalja - razdalja) / minRazdalja * 0.045;
+            var nx = dx / razdalja;
+            var ny = dy / razdalja;
 
-            // Če sta se okvirja vseeno preveč približala, ju nežno fizično razmaknemo.
+            e1.vx += nx * moc;
+            e1.vy += ny * moc;
+            e2.vx -= nx * moc;
+            e2.vy -= ny * moc;
+
             if (prekrivanjeOkvirjev) {
-              a.x += nx * 0.7;
-              a.y += ny * 0.7;
-              b.x -= nx * 0.7;
-              b.y -= ny * 0.7;
+              e1.x += nx * 0.7;
+              e1.y += ny * 0.7;
+              e2.x -= nx * 0.7;
+              e2.y -= ny * 0.7;
             }
           }
         }
       }
 
-      for (const a of aktivni) {
-        if (!a.odstranjujem) {
-          const hitrost = Math.sqrt(a.vx * a.vx + a.vy * a.vy);
-          const maxHitrost = 0.32;
+      for (var k = 0; k < aktivni.length; k++) {
+        var z = aktivni[k];
+
+        if (!z.odstranjujem) {
+          var hitrost = Math.sqrt(z.vx * z.vx + z.vy * z.vy);
+          var maxHitrost = 0.32;
 
           if (hitrost > maxHitrost) {
-            a.vx = a.vx / hitrost * maxHitrost;
-            a.vy = a.vy / hitrost * maxHitrost;
+            z.vx = z.vx / hitrost * maxHitrost;
+            z.vy = z.vy / hitrost * maxHitrost;
           }
 
-          a.x += a.vx;
-          a.y += a.vy;
+          z.x += z.vx;
+          z.y += z.vy;
 
-          if (a.x < 20 || a.x + a.w > window.innerWidth - 20) {
-            a.vx *= -1;
-            a.x = Math.max(20, Math.min(window.innerWidth - a.w - 20, a.x));
+          if (z.x < 20 || z.x + z.w > window.innerWidth - 20) {
+            z.vx *= -1;
+            z.x = Math.max(20, Math.min(window.innerWidth - z.w - 20, z.x));
           }
 
-          if (a.y < 20 || a.y + a.h > window.innerHeight - 20) {
-            a.vy *= -1;
-            a.y = Math.max(20, Math.min(window.innerHeight - a.h - 20, a.y));
+          if (z.y < 20 || z.y + z.h > window.innerHeight - 20) {
+            z.vy *= -1;
+            z.y = Math.max(20, Math.min(window.innerHeight - z.h - 20, z.y));
           }
         }
 
-        a.element.style.opacity = a.opacity;
-        a.element.style.transform = `translate(${a.x}px, ${a.y}px) scale(${a.scale}) rotate(${a.rot}deg)`;
+        z.element.style.opacity = z.opacity;
+        z.element.style.transform =
+          "translate(" + z.x + "px, " + z.y + "px) scale(" + z.scale + ") rotate(" + z.rot + "deg)";
       }
 
-      if (steviloSporocilNaZaslonu() < VSAJ_SPOROCIL) {
+      if (steviloSporocilNaZaslonu() < VSAJ_SPOROCIL && aktivni.length < NAJ_VEC_ELEMENTOV) {
         dodajElement(true);
       }
 
-      animacijaId = requestAnimationFrame(posodobi);
+      requestAnimationFrame(posodobi);
     }
 
-    let animacijaId;
+    osveziSporocila().then(function() {
+      dodajElement(true);
+      setTimeout(function() { dodajElement(true); }, 900);
+      setTimeout(function() { dodajElement(false); }, 2600);
+      setTimeout(function() { dodajElement(false); }, 5200);
 
-    setInterval(() => dodajElement(false), INTERVAL_NOVEGA_ELEMENTA);
+      requestAnimationFrame(posodobi);
+    });
 
-    dodajElement(true);
-    setTimeout(() => dodajElement(true), 900);
-    setTimeout(() => dodajElement(false), 2600);
-    setTimeout(() => dodajElement(false), 5200);
+    setInterval(function() {
+      osveziSporocila();
+    }, 3000);
 
-    let slikeInterval = null;
-
-    function prikaziVse() {
-      cancelAnimationFrame(animacijaId);
-      if (slikeInterval) { clearInterval(slikeInterval); slikeInterval = null; }
-
-      const vsebina = document.getElementById('overlayVsebina');
-      vsebina.innerHTML = '';
-
-      const naslovSlike = document.createElement('div');
-      naslovSlike.className = 'overlay-naslov';
-      naslovSlike.textContent = 'Slike';
-      vsebina.appendChild(naslovSlike);
-
-      const mrezaSlike = document.createElement('div');
-      mrezaSlike.className = 'overlay-mreza-slike';
-      vsebina.appendChild(mrezaSlike);
-
-      const naslovSporocila = document.createElement('div');
-      naslovSporocila.className = 'overlay-naslov';
-      naslovSporocila.textContent = 'Sporočila';
-      vsebina.appendChild(naslovSporocila);
-
-      const mrezaSporocila = document.createElement('div');
-      mrezaSporocila.className = 'overlay-mreza-sporocila';
-      for (const s of sporocila) {
-        const div = document.createElement('div');
-        div.className = 'overlay-sporocilo';
-        div.innerHTML = `<div>${escapeHTML(s.tekst)}</div><div class="ime">— ${escapeHTML(s.ime)}</div>`;
-        div.addEventListener('click', () => div.classList.toggle('razsirjeno'));
-        mrezaSporocila.appendChild(div);
-      }
-      vsebina.appendChild(mrezaSporocila);
-
-      document.getElementById('overlay').style.display = 'block';
-
-      let i = 0;
-      slikeInterval = setInterval(() => {
-        if (i >= slike.length) { clearInterval(slikeInterval); slikeInterval = null; return; }
-        const img = document.createElement('img');
-        img.className = 'overlay-slika';
-        img.loading = 'lazy';
-        img.src = slike[i++];
-        mrezaSlike.appendChild(img);
-      }, 30);
-    }
-
-    function zapriOverlay() {
-      if (slikeInterval) { clearInterval(slikeInterval); slikeInterval = null; }
-      document.getElementById('overlay').style.display = 'none';
-      animacijaId = requestAnimationFrame(posodobi);
-    }
-
-    animacijaId = requestAnimationFrame(posodobi);
+    setInterval(function() {
+      dodajElement(false);
+    }, INTERVAL_NOVEGA_ELEMENTA);
   </script>
 </body>
 </html>
